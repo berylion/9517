@@ -33,10 +33,11 @@ public class Robot extends TimedRobot {
   private final PWMSparkMax rightFront = new PWMSparkMax(2);
   private final PWMSparkMax rightRear = new PWMSparkMax(3);
 
+  private final PWMSparkMax intake1 = new PWMSparkMax(4);
+  private final PWMSparkMax intake2 = new PWMSparkMax(5);
+
   private final PWMSparkMax shooter = new PWMSparkMax(6);
 
-  //private final PWMSparkMax intakeI = new PWMSparkMax(4);
-  //private final PWMSparkMax intakeO = new PWMSparkMax(5);
 
   private final Timer timer1 = new Timer();
 
@@ -57,8 +58,7 @@ public class Robot extends TimedRobot {
 
     leftFront.setInverted(true);
     rightFront.setInverted(false);
-
-
+    shooter.setInverted(true);
 
     timer1.start();
   }
@@ -174,14 +174,28 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     /*tank drive controls */
+    //left side controls
     leftFront.set(driverController.getLeftY());
-    rightFront.set(-driverController.getRightY());
     leftRear.addFollower(leftFront);
+    //right side controls
+    rightFront.set(-driverController.getRightY());
     rightRear.addFollower(rightFront);
     //-----------------------------------------------
     /*intake controls */
-    
-
+    if(driverController.getRightBumperPressed()){
+      intake1.set(.98);
+      intake2.set(.98);
+    }else if(driverController.getRightBumperReleased()){
+      intake1.set(0);
+      intake2.set(0);
+    }
+    //-----------------------------------------------
+    /*shooter controls (Y-split) */
+    if(driverController.getYButton()){
+      shooter.set(.98);
+    }else if(driverController.getXButton()){
+      shooter.set(.0);
+    }
 
   }
 
